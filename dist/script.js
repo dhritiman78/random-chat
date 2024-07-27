@@ -43,6 +43,13 @@ socket.on('recieve', (data) => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     notification.play()
 })
+socket.on('user-left', (name) => {
+    const leaveMessage = document.createElement('div');
+    leaveMessage.className = 'text-center';
+    leaveMessage.innerHTML = `<span class="text-center p-1 rounded-[10px] font-bold text-white bg-red-500">${name} left the chat</span>`;
+    messagesContainer.appendChild(leaveMessage);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  });
 
 let typing = false;
 let timeout = null;

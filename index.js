@@ -9,6 +9,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
+let usersCount = 0;
+
 app.use(express.static(join(__dirname, 'dist')));
 
 app.get('/', (req, res) => {
@@ -21,6 +23,7 @@ app.get('/:slug', (req, res) => {
 io.on('connection', (socket) => {
   socket.on('new-user', (name) => {
     userdetails[socket.id] = name;
+    usersCount++;
     socket.broadcast.emit('user-joined', name);
   });
   socket.on('send', (message) => {
@@ -29,6 +32,11 @@ io.on('connection', (socket) => {
   socket.on('typing-status', (isTyping) => {
     socket.broadcast.emit('show-typing-status', {isUserTyping: isTyping, user_name: userdetails[socket.id]})
   })
+
+  socket.on('disconnect', () => {
+    usersCount++;
+    socket.broadcast.emit('user-left', userdetails[socket.id]);
+  });
 });
 
 server.listen(PORT, () => {
