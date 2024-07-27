@@ -3,7 +3,7 @@ const username = prompt('What is your name?', 'Guest');
 const messagesContainer = document.getElementById('messages-container');
 const form = document.getElementById('form')
 const notification = new Audio('/notification.mp3')
-
+let typing_user_name = ''
 form.addEventListener('submit', (e) => {
     e.preventDefault()
     const textElement = document.getElementById('text')
@@ -42,4 +42,31 @@ socket.on('recieve', (data) => {
     messagesContainer.appendChild(messageBox)
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     notification.play()
+})
+
+let typing = false;
+let timeout = null;
+
+function typingStatus(isTyping) {
+    socket.emit('typing-status',isTyping)
+}
+
+let typingStatusBox = document.createElement('div');
+typingStatusBox.className = 'p-2 text-gray-500 text-sm text-center typing-status';
+
+
+socket.on('show-typing-status',(data) => {
+    if (data.isUserTyping) {
+        typing = true;
+        typing_user_name = data.user_name
+        typingStatusBox.textContent = `${data.user_name} is typing...`;
+        messagesContainer.appendChild(typingStatusBox);
+    } else {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            typing = false;
+            typingStatusBox.textContent = '';
+            typingStatusBox.remove();
+        }, 1000); 
+    }
 })
