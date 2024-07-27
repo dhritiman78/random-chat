@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex flex-col h-screen bg-gray-200">
+  <!-- Header -->
+  <div class="bg-blue-500 py-4 shadow-lg">
+    <h2 class="text-white text-center text-2xl font-bold">Real Chat</h2>
+  </div>
+
+  <!-- Chat messages -->
+  <div id="messages-container" class="flex-grow overflow-y-auto p-4 bg-gray-100">
+
+  </div>
+
+  <!-- Input form -->
+  <div class="p-4 bg-white shadow-inner">
+    <form id="form" class="flex">
+      <input type="text" id="text" name="text"
+        class="flex-grow border border-gray-300 rounded-l py-2 px-4 focus:outline-none focus:border-blue-500"
+        placeholder="Type your message" onkeydown="typingStatus(true)" onkeyup="typingStatus(false)">
+      <button type="submit" id="sendbtn" class="bg-blue-500 text-white py-2 px-4 rounded-r">
+        Send
+      </button>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

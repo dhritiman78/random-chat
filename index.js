@@ -14,6 +14,9 @@ app.use(express.static(join(__dirname, 'dist')));
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
+app.get('/:slug', (req, res) => {
+  res.sendFile(join(__dirname, 'dist', `${req.params.slug}.html`));
+});
 
 io.on('connection', (socket) => {
   socket.on('new-user', (name) => {

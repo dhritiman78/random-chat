@@ -14,24 +14,45 @@
     <h2 class="text-white text-center text-2xl font-bold">Real Chat</h2>
   </div>
 
-  <!-- Chat messages -->
-  <div id="messages-container" class="flex-grow overflow-y-auto p-4 bg-gray-100">
-
+ <!-- Main Content -->
+ <div class="flex-1 flex justify-center items-center">
+    <div class="text-center">
+      <h2 class="text-lg font-bold mb-4">Choose your chat experience</h2>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4" id="random-chat-btn">Chat with a random stranger</button>
+      <div class="text-gray-500 mb-4">OR</div>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="room-chat-btn">Enter a chat room</button>
+    </div>
   </div>
 
-  <!-- Input form -->
-  <div class="p-4 bg-white shadow-inner">
-    <form id="form" class="flex">
-      <input type="text" id="text" name="text"
-        class="flex-grow border border-gray-300 rounded-l py-2 px-4 focus:outline-none focus:border-blue-500"
-        placeholder="Type your message" onkeydown="typingStatus(true)" onkeyup="typingStatus(false)">
-      <button type="submit" id="sendbtn" class="bg-blue-500 text-white py-2 px-4 rounded-r">
-        Send
-      </button>
-    </form>
+  <!-- Agreement Modal -->
+  <div class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" id="agreement-modal">
+    <div class="bg-white p-4 rounded-lg shadow-lg">
+      <h2 class="text-lg font-bold mb-4">Terms and Conditions</h2>
+      <p class="text-gray-500 mb-4">By clicking "Accept", you agree to our <a class="text-blue-500" href="./termsAndCondition">terms and conditions</a>.</p>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="accept-btn">Accept</button>
+    </div>
   </div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <script>
+    const randomChatBtn = document.getElementById('random-chat-btn');
+    const roomChatBtn = document.getElementById('room-chat-btn');
+    const agreementModal = document.getElementById('agreement-modal');
+    const acceptBtn = document.getElementById('accept-btn');
+    var url = ''
+    randomChatBtn.addEventListener('click', () => {
+      agreementModal.classList.remove('hidden');
+      url = './chatRandom'
+    });
+
+    roomChatBtn.addEventListener('click', () => {
+      agreementModal.classList.remove('hidden');
+      url = './chatRoom'
+    });
+
+    acceptBtn.addEventListener('click', () => {
+      agreementModal.classList.add('hidden');
+      window.location.href = url
+    });
+  </script>
 </body>
 
 </html>
