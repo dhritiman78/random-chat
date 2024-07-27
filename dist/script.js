@@ -61,6 +61,7 @@ socket.on('show-typing-status',(data) => {
         typing_user_name = data.user_name
         typingStatusBox.textContent = `${data.user_name} is typing...`;
         messagesContainer.appendChild(typingStatusBox);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } else {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
