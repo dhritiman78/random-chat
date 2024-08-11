@@ -49,54 +49,30 @@ chatrandomNamespace.on('connection', (socket) => {
   socket.on('new-user', (name_random) => {
     users[name_random] = { socket: socket, connectedTo: null, isConnected: false };
     randomUsersDetails[socket.id] = name_random
-    const match = findMatch(name_random);
-
-    if (match) {
-      // Update both users' connections
-      users[name_random].connectedTo = match;
-      users[match].connectedTo = name_random;
-      users[name_random].isConnected = true;
-      users[match].isConnected = true;
-
-      // Emit event to both users' sockets
-      users[name_random].socket.emit('user-matched', users[name_random].connectedTo);
-      users[match].socket.emit('user-matched', users[match].connectedTo);
-    } else {
-      // Retry matching after 5 seconds if no match is found
-      setTimeout(() => {
-        const matchRetry = findMatch(name_random);
-        if (matchRetry) {
-          users[name_random].connectedTo = matchRetry;
-          users[matchRetry].connectedTo = name_random;
-          users[name_random].isConnected = true;
-          users[matchRetry].isConnected = true;
-
-          users[name_random].socket.emit('user-matched', users[name_random].connectedTo);
-          users[matchRetry].socket.emit('user-matched', users[matchRetry].connectedTo);
-        }
-      }, 5000);
-    }
+    makeMatch(name_random)
   });
   socket.on('send-text',(text) => {
     let sendUserName = randomUsersDetails[socket.id]
     let recieverUserName = users[sendUserName].connectedTo;
-    users[recieverUserName].socket.emit('recieved-text',{user: sendUserName, message: text} )
+    users[recieverUserName]?.socket.emit('recieved-text',{user: sendUserName, message: text} )
   })
 
 socket.on('user-next',() => {
   const disconnectedUser = randomUsersDetails[socket.id]
-    const connectedUser = users[disconnectedUser].connectedTo
-    users[connectedUser].socket.emit('user-disconnected', disconnectedUser);
+    const connectedUser = users[disconnectedUser]?.connectedTo
+    users[connectedUser]?.socket.emit('user-disconnected', disconnectedUser);
     users[connectedUser].connectedTo = null;
     users[connectedUser].isConnected = false;
-    users[disconnectedUser].socket.emit('user-ready-to-connect')
+    retryConn(connectedUser)
+    users[disconnectedUser]?.socket.emit('user-ready-to-connect')
     users[disconnectedUser].connectedTo = null;
     users[disconnectedUser].isConnected = false;
+    retryConn(disconnectedUser)
 })
 
   socket.on('disconnect', () => {
     const disconnectedUser = randomUsersDetails[socket.id]
-    const connectedUser = users[disconnectedUser].connectedTo
+    const connectedUser = users[disconnectedUser]?.connectedTo
 
     if (disconnectedUser) {
       // Notify the connected user about the disconnection
@@ -104,6 +80,7 @@ socket.on('user-next',() => {
         users[connectedUser].socket.emit('user-disconnected', disconnectedUser);
         users[connectedUser].connectedTo = null;
         users[connectedUser].isConnected = false;
+        retryConn(connectedUser)
       }
 
       // Remove the disconnected user from the users object
@@ -119,6 +96,40 @@ function findMatch(name_random) {
     }
   }
   return null;
+}
+
+function makeMatch(name_random) {
+  const match = findMatch(name_random);
+
+    if (match) {
+      // Update both users' connections
+      users[name_random].connectedTo = match;
+      users[match].connectedTo = name_random;
+      users[name_random].isConnected = true;
+      users[match].isConnected = true;
+
+      // Emit event to both users' sockets
+      users[name_random]?.socket.emit('user-matched', users[name_random].connectedTo);
+      users[match]?.socket.emit('user-matched', users[match].connectedTo);
+    } else {
+      // Retry matching after 5 seconds if no match is found
+      retryConn(name_random)
+    }
+}
+
+function retryConn(name_random) {
+  setTimeout(() => {
+    const matchRetry = findMatch(name_random);
+    if (matchRetry) {
+      users[name_random].connectedTo = matchRetry;
+      users[matchRetry].connectedTo = name_random;
+      users[name_random].isConnected = true;
+      users[matchRetry].isConnected = true;
+
+      users[name_random]?.socket.emit('user-matched', users[name_random].connectedTo);
+      users[matchRetry]?.socket.emit('user-matched', users[matchRetry].connectedTo);
+    }
+  }, 5000);
 }
 
 
