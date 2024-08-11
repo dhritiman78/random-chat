@@ -83,7 +83,21 @@ chatrandomNamespace.on('connection', (socket) => {
     users[recieverUserName].socket.emit('recieved-text',{user: sendUserName, message: text} )
   })
 
-
+socket.on('user-next',() => {
+  const disconnectedUser = randomUsersDetails[socket.id]
+    const connectedUser = users[disconnectedUser].connectedTo
+    users[connectedUser].socket.emit('user-disconnected', disconnectedUser);
+    users[connectedUser].connectedTo = null;
+    users[connectedUser].isConnected = false;
+    users[disconnectedUser].socket.emit('user-ready-to-connect')
+    users[disconnectedUser].connectedTo = null;
+    users[disconnectedUser].isConnected = false;
+})
+socket.on('typing-status', (isTyping) => {
+  const userWhoIsTyping = randomUsersDetails[socket.id]
+  const userToShow = users[userWhoIsTyping].connectedTo
+  users[userToShow].socket.emit('show-typing-status', {isUserTyping: isTyping, user_name: userWhoIsTyping})
+})
   socket.on('disconnect', () => {
     let disconnectedUser;
     let connectedUser;
