@@ -14,7 +14,7 @@ Welcome to the **Socket-Based Chat Application**! This project is designed to co
 
 ## 📁 Project Structure
 
-- **`randomScript.js`**: Main script handling the socket connections and user matching logic.
+- **`index.js`**: Main script handling the socket connections and user matching logic.
 - **`findMatch()`**: Function to find and connect users in the `chatRandom` namespace.
 - **Namespaces**:
   - **`chatRoom`**: For standard chatroom experience.
