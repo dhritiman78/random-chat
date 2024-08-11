@@ -22,8 +22,9 @@ Welcome to the **Socket-Based Chat Application**! This project is designed to co
 
 ## 👨‍💻 Usage
 
-    - **`chatRoom`**: Join a common room to chat with multiple users.
-    - **`chatRandom`**: Get randomly matched with another user for a private chat.
+   - **chatRoom**: Join a common room to chat with multiple users.
+   - **chatRandom**: Get randomly matched with another user for a private chat.
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
