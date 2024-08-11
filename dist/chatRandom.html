@@ -1,9 +1,9 @@
 <script>
-  if (confirm("This page is under construction. You can use the chatroom version for now!")) {
-   window.location.href = './'   
-  } else {
-      window.location.href = './'   
-  }
+  // if (confirm("This page is under construction. You can use the chatroom version for now!")) {
+  //  window.location.href = './'   
+  // } else {
+  //     window.location.href = './'   
+  // }
 </script>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Real Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="../src/output.css" rel="stylesheet">
 </head>
 
 <body class="flex flex-col h-screen bg-gray-200">
@@ -31,7 +32,9 @@
 <!-- Input form -->
 
   <div class="p-4 bg-white shadow-inner">
-    
+    <button id="stop-nextBtn" class="bg-blue-500 text-white py-2 px-4 rounded-r">
+      Stop
+    </button>
     <form id="form" class="flex">
       <input type="text" id="text" name="text"
         class="flex-grow border border-gray-300 rounded-l py-2 px-4 focus:outline-none focus:border-blue-500"
@@ -44,7 +47,7 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <script src="./RandomChatScript.js"></script>
 </body>
 
 </html>

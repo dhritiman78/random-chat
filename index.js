@@ -9,9 +9,10 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-let usersCount = 0;
+
 
 app.use(express.static(join(__dirname, 'dist')));
+app.use(express.static(join(__dirname, 'src')));
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
@@ -19,11 +20,13 @@ app.get('/', (req, res) => {
 app.get('/:slug', (req, res) => {
   res.sendFile(join(__dirname, 'dist', `${req.params.slug}.html`));
 });
+app.get('/src/output', (req, res) => {
+  res.sendFile(join(__dirname, 'src', `output.css`));
+});
 
 io.on('connection', (socket) => {
   socket.on('new-user', (name) => {
     userdetails[socket.id] = name;
-    usersCount++;
     socket.broadcast.emit('user-joined', name);
   });
   socket.on('send', (message) => {
@@ -34,10 +37,10 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    usersCount++;
     socket.broadcast.emit('user-left', userdetails[socket.id]);
   });
 });
+
 
 server.listen(PORT, () => {
   console.log('server running at http://localhost:3000');

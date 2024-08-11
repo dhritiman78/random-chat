@@ -30,7 +30,9 @@ socket.on('user-joined', (name) => {
     messagesContainer.appendChild(joinMessage);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 });
-
+socket.on('user-numbers', (user_num) => {
+    document.getElementById('users-number').innerText = `${user_num} users online`
+})
 socket.on('recieve', (data) => {
     const messageBox = document.createElement('div')
     messageBox.className = 'flex justify-start mb-4'
