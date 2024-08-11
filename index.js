@@ -43,11 +43,12 @@ chatroomNamespace.on('connection', (socket) => {
 });
 
 const users = {};
+const randomUsersDetails = {}
 
 chatrandomNamespace.on('connection', (socket) => {
   socket.on('new-user', (name_random) => {
     users[name_random] = { socket: socket, connectedTo: null, isConnected: false };
-
+    randomUsersDetails[socket.id] = name_random
     const match = findMatch(name_random);
 
     if (match) {
@@ -76,6 +77,12 @@ chatrandomNamespace.on('connection', (socket) => {
       }, 5000);
     }
   });
+  socket.on('send-text',(text) => {
+    let sendUserName = randomUsersDetails[socket.id]
+    let recieverUserName = users[sendUserName].connectedTo;
+    users[recieverUserName].socket.emit('recieved-text',{user: sendUserName, message: text} )
+  })
+
 
   socket.on('disconnect', () => {
     let disconnectedUser;
