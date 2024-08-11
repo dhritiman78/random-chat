@@ -132,7 +132,7 @@ function makeMatch(name_random, notToConnect) {
 
 function retryConn(name_random) {
   setTimeout(() => {
-    const matchRetry = findMatch(name_random);
+    const matchRetry = findMatch(name_random, '');
     if (matchRetry) {
       users[name_random].connectedTo = matchRetry;
       users[matchRetry].connectedTo = name_random;
