@@ -49,7 +49,7 @@ chatrandomNamespace.on('connection', (socket) => {
   socket.on('new-user', (name_random) => {
     users[name_random] = { socket: socket, connectedTo: null, isConnected: false };
     randomUsersDetails[socket.id] = name_random
-    makeMatch(name_random)
+    makeMatch(name_random, '')
   });
   socket.on('send-text',(text) => {
     let sendUserName = randomUsersDetails[socket.id]
@@ -63,11 +63,11 @@ socket.on('user-next',() => {
     users[connectedUser]?.socket.emit('user-disconnected', disconnectedUser);
     users[connectedUser].connectedTo = null;
     users[connectedUser].isConnected = false;
-    retryConn(connectedUser)
+    makeMatch(connectedUser, disconnectedUser)
     users[disconnectedUser]?.socket.emit('user-ready-to-connect')
     users[disconnectedUser].connectedTo = null;
     users[disconnectedUser].isConnected = false;
-    retryConn(disconnectedUser)
+    makeMatch(disconnectedUser, connectedUser)
 })
 
   socket.on('disconnect', () => {
@@ -80,7 +80,7 @@ socket.on('user-next',() => {
         users[connectedUser].socket.emit('user-disconnected', disconnectedUser);
         users[connectedUser].connectedTo = null;
         users[connectedUser].isConnected = false;
-        retryConn(connectedUser)
+        makeMatch(connectedUser, disconnectedUser)
       }
 
       // Remove the disconnected user from the users object
@@ -89,17 +89,30 @@ socket.on('user-next',() => {
   });
 });
 
-function findMatch(name_random) {
+function findMatch(name_random, notToConnect) {
+  let isAlreadyConnected = false;
+  let alreayConnectedTo = '';
   for (const user in users) {
-    if (users[user].isConnected === false && user !== name_random) {
-      return user;
+    if (users[user].isConnected === true && users[user].connectedTo == name_random && user!=notToConnect) {
+      isAlreadyConnected = true
+      alreayConnectedTo = user
     }
   }
+  if (isAlreadyConnected) {
+    return alreayConnectedTo
+  } else {
+    for (const user in users) {
+      if (users[user].isConnected === false && user !== name_random && user!=notToConnect) {
+        return user;
+      }
+    }
+  }
+  
   return null;
 }
 
-function makeMatch(name_random) {
-  const match = findMatch(name_random);
+function makeMatch(name_random, notToConnect) {
+  const match = findMatch(name_random , notToConnect);
 
     if (match) {
       // Update both users' connections
