@@ -64,3 +64,26 @@ chatRandomSocket.on('user-disconnected', (disconnected_random) => {
     alert(`${disconnected_random} has disconnected`)
     messagesContainer.innerHTML = '<div id="WaitingConnStatus" class="text-center text-gray-500 mb-4">Waiting for connection...</div>'
 })
+// Typing Status
+let typing = false;
+let timeout = null;
+let typingStatusBox = document.createElement('div');
+typingStatusBox.className = 'p-2 text-gray-500 text-sm text-center typing-status';
+chatRandomSocket.on('show-typing', (data) => {
+if (data.isTyping) {
+  showTyping(data)
+} else {
+  setTimeout(() => {
+    typingStatusBox.innerHTML = ''
+    typingStatusBox.remove()
+  },1000)
+}
+})
+function typingStatus(value) {
+    chatRandomSocket.emit('user-typing', value)
+}
+function showTyping(data) {
+typingStatusBox.innerHTML = `${data.user_name} is typing...`;
+messagesContainer.appendChild(typingStatusBox);
+messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}

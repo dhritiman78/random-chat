@@ -70,6 +70,14 @@ socket.on('user-next',() => {
     makeMatch(disconnectedUser, connectedUser)
 })
 
+// Typing Status
+socket.on('user-typing', (value) => {
+  const userWhoIsTyping = randomUsersDetails[socket.id]
+    const userToShow = users[userWhoIsTyping]?.connectedTo
+    users[userToShow]?.socket.emit('show-typing', {isTyping: value, user_name: userWhoIsTyping})
+})
+
+
   socket.on('disconnect', () => {
     const disconnectedUser = randomUsersDetails[socket.id]
     const connectedUser = users[disconnectedUser]?.connectedTo
