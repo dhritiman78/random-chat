@@ -93,23 +93,10 @@ socket.on('user-next',() => {
     users[disconnectedUser].connectedTo = null;
     users[disconnectedUser].isConnected = false;
 })
-socket.on('typing-status', (isTyping) => {
-  const userWhoIsTyping = randomUsersDetails[socket.id]
-  const userToShow = users[userWhoIsTyping].connectedTo
-  users[userToShow].socket.emit('show-typing-status', {isUserTyping: isTyping, user_name: userWhoIsTyping})
-})
-  socket.on('disconnect', () => {
-    let disconnectedUser;
-    let connectedUser;
 
-    // Find the disconnected user
-    for (const user in users) {
-      if (users[user].socket.id === socket.id) {
-        disconnectedUser = user;
-        connectedUser = users[user].connectedTo;
-        break;
-      }
-    }
+  socket.on('disconnect', () => {
+    const disconnectedUser = randomUsersDetails[socket.id]
+    const connectedUser = users[disconnectedUser].connectedTo
 
     if (disconnectedUser) {
       // Notify the connected user about the disconnection

@@ -6,7 +6,6 @@ const WaitingConnStatus = document.getElementById('WaitingConnStatus');
 const notification = new Audio('/notification.mp3')
 const form = document.getElementById('form')
 const nextbtn = document.getElementById('nextBtn')
-let typing_user_name = ''
 
 chatRandomSocket.emit('new-user', username)
 chatRandomSocket.on('user-matched', (name_random) => {
@@ -60,44 +59,6 @@ nextbtn.addEventListener('click', () => {
 chatRandomSocket.on('user-ready-to-connect', () => {
   messagesContainer.innerHTML = '<div id="WaitingConnStatus" class="text-center text-gray-500 mb-4">Waiting for connection...</div>'
 })
-let typing = false;
-let timeout = null;
-
-function typingStatus(isTyping) {
-  chatRandomSocket.emit('typing-status', { isTyping, user_name: username });
-}
-
-
-
-chatRandomSocket.on('show-typing-status', (data) => {
-  
-  typingStatusBox.textContent = `${data.user_name} is typing...`;
-  // if (data.isTyping && data.user_name !== username) {
-  //   // typingStatusBox.textContent = `${data.user_name} is typing...`;
-  //   // if (!document.body.contains(typingStatusBox)) {
-  //   //   messagesContainer.appendChild(typingStatusBox);
-  //   //   messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  //   // }
-  // } else {
-  //   notification.play()
-
-  //   clearTimeout(timeout);
-  //   timeout = setTimeout(() => {
-  //     typingStatusBox.textContent = '';
-  //     if (document.body.contains(typingStatusBox)) {
-  //       typingStatusBox.remove();
-  //     }
-  //   }, 1000);
-  // }
-});
-
-document.getElementById('text').addEventListener('input', () => {
-  if (document.getElementById('text').value.length > 0) {
-    typingStatus(true);
-  } else {
-    typingStatus(false);
-  }
-});
 
 chatRandomSocket.on('user-disconnected', (disconnected_random) => {
     alert(`${disconnected_random} has disconnected`)
