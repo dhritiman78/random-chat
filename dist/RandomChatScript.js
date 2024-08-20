@@ -16,6 +16,9 @@ chatRandomSocket.on('user-matched', (name_random) => {
   messagesContainer.appendChild(joinMessage);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
   notification.play()
+  nextbtn.classList.remove('bg-blue-200')
+  nextbtn.classList.add('bg-blue-500')
+  nextbtn.disabled = false;
 })
 
 form.addEventListener('submit', (e) => {
@@ -53,6 +56,9 @@ chatRandomSocket.on('recieved-text', (recieved_data) => {
 nextbtn.addEventListener('click', () => {
   if (confirm('Are you sure?')) {
     chatRandomSocket.emit('user-next')
+    nextbtn.classList.remove('bg-blue-500')
+    nextbtn.classList.add('bg-blue-200')
+    nextbtn.disabled = true;
   }
 })
 
@@ -63,6 +69,9 @@ chatRandomSocket.on('user-ready-to-connect', () => {
 chatRandomSocket.on('user-disconnected', (disconnected_random) => {
     alert(`${disconnected_random} has disconnected`)
     messagesContainer.innerHTML = '<div id="WaitingConnStatus" class="text-center text-gray-500 mb-4">Waiting for connection...</div>'
+    nextbtn.classList.remove('bg-blue-500')
+    nextbtn.classList.add('bg-blue-200')
+    nextbtn.disabled = true;
 })
 // Typing Status
 let typing = false;
