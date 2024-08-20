@@ -4,34 +4,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home</title>
+  <title>Real Chat</title>
   <link href="/src/output" rel="stylesheet">
 </head>
 
-<body class="flex flex-col h-screen bg-gray-200">
+<body class="flex flex-col h-screen bg-gray-100">
   <!-- Header -->
-  <div class="bg-blue-500 py-4 shadow-lg">
-    <h2 class="text-white text-center text-2xl font-bold">Real Chat</h2>
-    <p id="users-number" class="text-center text-gray-200"></p>
+  <div class="bg-blue-600 py-4 shadow-lg">
+    <h2 class="text-white text-center text-3xl font-bold">Real Chat</h2>
+    <p id="users-number" class="text-center text-gray-200 mt-1"></p>
   </div>
 
-
   <!-- Chat messages -->
-  <div id="messages-container" class="flex-grow overflow-y-auto p-4 bg-gray-100">
-
+  <div id="messages-container" class="flex-grow overflow-y-auto p-4 bg-white border-t border-b border-gray-300 shadow-inner">
+    <!-- Messages will appear here -->
   </div>
 
   <!-- Input form -->
-  <div class="p-4 bg-white shadow-inner">
+  <div class="p-4 bg-blue-50 shadow-lg border-t border-gray-300">
     <form id="form" class="flex">
       <input type="text" id="text" name="text"
-        class="flex-grow border border-gray-300 rounded-l py-2 px-4 focus:outline-none focus:border-blue-500"
-        placeholder="Type your message" onkeydown="typingStatus(true)" onkeyup="typingStatus(false)">
-      <button type="submit" id="sendbtn" class="bg-blue-500 text-white py-2 px-4 rounded-r">
+        class="flex-grow border border-gray-300 rounded-l-lg py-3 px-4 focus:outline-none focus:border-blue-600"
+        placeholder="Type your message" onkeydown="typingStatus(true)" onkeyup="typingStatus(false)" />
+      <button type="submit" id="sendbtn" class="bg-blue-600 text-white py-3 px-6 rounded-r-lg hover:bg-blue-700">
         Send
       </button>
     </form>
   </div>
+
+  <!-- Scripts -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
