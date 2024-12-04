@@ -7,7 +7,10 @@ const userdetails = {}
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+// const io = new Server(server);
+const io = new Server(server, {
+  transports: ['polling'], // Fallback to HTTP long polling
+});
 
 // Name spaces
 const chatroomNamespace = io.of('/chatRoom');
@@ -78,38 +81,23 @@ socket.on('user-typing', (value) => {
 })
 
 
-  // socket.on('disconnect', () => {
-  //   const disconnectedUser = randomUsersDetails[socket.id]
-  //   const connectedUser = users[disconnectedUser]?.connectedTo
-
-  //   if (disconnectedUser) {
-  //     // Notify the connected user about the disconnection
-  //     if (connectedUser && users[connectedUser]) {
-  //       users[connectedUser].socket.emit('user-disconnected', disconnectedUser);
-  //       users[connectedUser].connectedTo = null;
-  //       users[connectedUser].isConnected = false;
-  //       makeMatch(connectedUser, disconnectedUser)
-  //     }
-
-  //     // Remove the disconnected user from the users object
-  //     delete users[disconnectedUser];
-  //   }
-  // });
-
   socket.on('disconnect', () => {
-    const disconnectedUser = randomUsersDetails[socket.id];
+    const disconnectedUser = randomUsersDetails[socket.id]
+    const connectedUser = users[disconnectedUser]?.connectedTo
+
     if (disconnectedUser) {
-      const connectedUser = users[disconnectedUser]?.connectedTo;
+      // Notify the connected user about the disconnection
       if (connectedUser && users[connectedUser]) {
         users[connectedUser].socket.emit('user-disconnected', disconnectedUser);
         users[connectedUser].connectedTo = null;
         users[connectedUser].isConnected = false;
+        makeMatch(connectedUser, disconnectedUser)
       }
+
+      // Remove the disconnected user from the users object
       delete users[disconnectedUser];
-      delete randomUsersDetails[socket.id];
     }
   });
-  
 });
 
 function findMatch(name_random, notToConnect) {
@@ -153,29 +141,20 @@ function makeMatch(name_random, notToConnect) {
     }
 }
 
-// function retryConn(name_random) {
-//   setTimeout(() => {
-//     const matchRetry = findMatch(name_random, '');
-//     if (matchRetry) {
-//       users[name_random].connectedTo = matchRetry;
-//       users[matchRetry].connectedTo = name_random;
-//       users[name_random].isConnected = true;
-//       users[matchRetry].isConnected = true;
-
-//       users[name_random]?.socket.emit('user-matched', users[name_random].connectedTo);
-//       users[matchRetry]?.socket.emit('user-matched', users[matchRetry].connectedTo);
-//     }
-//   }, 5000);
-// }
 function retryConn(name_random) {
-  const matchRetry = findMatch(name_random, '');
-  if (matchRetry) {
-    makeMatch(name_random, '');
-  } else {
-    users[name_random]?.socket.emit('no-match-found');
-  }
-}
+  setTimeout(() => {
+    const matchRetry = findMatch(name_random, '');
+    if (matchRetry) {
+      users[name_random].connectedTo = matchRetry;
+      users[matchRetry].connectedTo = name_random;
+      users[name_random].isConnected = true;
+      users[matchRetry].isConnected = true;
 
+      users[name_random]?.socket.emit('user-matched', users[name_random].connectedTo);
+      users[matchRetry]?.socket.emit('user-matched', users[matchRetry].connectedTo);
+    }
+  }, 5000);
+}
 
 
 server.listen(PORT, () => {
