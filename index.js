@@ -8,9 +8,14 @@ const userdetails = {}
 const app = express();
 const server = createServer(app);
 // const io = new Server(server);
+
 const io = new Server(server, {
-  transports: ['polling'], // Fallback to HTTP long polling
+  cors: {
+    origin: "https://random-chat-3v7g.vercel.app", // Your deployed frontend
+    methods: ["GET", "POST"],
+  },
 });
+
 
 // Name spaces
 const chatroomNamespace = io.of('/chatRoom');

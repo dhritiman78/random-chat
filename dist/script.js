@@ -1,6 +1,4 @@
-const chatroomSocket = io('/chatRoom', {
-  transports: ['polling'], // Match server transport
-});
+const chatroomSocket = io('/chatRoom');
 
 const username = prompt('What is your name?', 'Guest');
 const messagesContainer = document.getElementById('messages-container');

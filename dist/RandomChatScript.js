@@ -1,6 +1,4 @@
-const chatRandomSocket = io('/chatRandom', {
-  transports: ['polling'], // Match server transport
-});
+const chatRandomSocket = io('/chatRandom');
 
 const username = prompt('Write a name to join?');
 const messagesContainer = document.getElementById('messages-container');
