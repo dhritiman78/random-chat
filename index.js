@@ -7,15 +7,7 @@ const userdetails = {}
 
 const app = express();
 const server = createServer(app);
-// const io = new Server(server);
-
-const io = new Server(server, {
-  cors: {
-    origin: "https://random-chat-3v7g.vercel.app", // Your deployed frontend
-    methods: ["GET", "POST"],
-  },
-});
-
+const io = new Server(server);
 
 // Name spaces
 const chatroomNamespace = io.of('/chatRoom');
